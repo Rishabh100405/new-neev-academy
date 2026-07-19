@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head', { title: 'Add Student' }) %>
+</head>
+<body>
+  <%- include('../partials/admin-nav') %>
+
+  <div class="page narrow">
+    <h1>Add Student</h1>
+    <% if (error) { %>
+      <p class="error"><%= error %></p>
+    <% } %>
+    <div class="card">
+      <form method="POST" action="/admin/students">
+        <label>Full Name</label>
+        <input type="text" name="name" required autofocus />
+
+        <label>Username (for student login)</label>
+        <input type="text" name="username" required />
+
+        <label>Password (for student login)</label>
+        <input type="text" name="password" required />
+
+        <label>Class / Batch (optional)</label>
+        <input type="text" name="className" />
+
+        <label>Phone (optional)</label>
+        <input type="text" name="phone" />
+
+        <button type="submit" class="btn btn-primary full-width">Create Student</button>
+      </form>
+    </div>
+    <p><a href="/admin/dashboard">&larr; Back to dashboard</a></p>
+  </div>
+</body>
+</html>

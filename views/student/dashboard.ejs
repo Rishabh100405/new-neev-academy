@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head', { title: 'My Fee Details' }) %>
+</head>
+<body>
+  <div class="navbar">
+    <span class="nav-brand">Tuition Portal — Student</span>
+    <a href="/student/logout" class="btn btn-small btn-secondary">Logout</a>
+  </div>
+
+  <div class="page">
+    <div class="page-header">
+      <div>
+        <h1><%= student.name %></h1>
+        <p class="muted">
+          <% if (student.className) { %><%= student.className %><% } %>
+        </p>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card summary-card">
+        <h2>Paid Months</h2>
+        <p class="big-number badge-green-text"><%= paidFees.length %></p>
+      </div>
+      <div class="card summary-card">
+        <h2>Pending Months</h2>
+        <p class="big-number badge-red-text"><%= pendingFees.length %></p>
+      </div>
+    </div>
+
+    <h2 class="section-title">Fee History</h2>
+    <% if (sortedFees.length === 0) { %>
+      <p class="muted">No fee records yet. Please check with your tuition admin.</p>
+    <% } else { %>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Month</th>
+            <th>Year</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Paid On</th>
+            <th>Remarks</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% sortedFees.forEach(fee => { %>
+            <tr>
+              <td><%= fee.month %></td>
+              <td><%= fee.year %></td>
+              <td><%= fee.amount %></td>
+              <td>
+                <span class="badge <%= fee.status === 'paid' ? 'badge-green' : 'badge-red' %>">
+                  <%= fee.status === 'paid' ? 'Paid' : 'Pending' %>
+                </span>
+              </td>
+              <td><%= fee.paidOn ? new Date(fee.paidOn).toLocaleDateString() : '-' %></td>
+              <td><%= fee.remarks || '-' %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } %>
+  </div>
+</body>
+</html>

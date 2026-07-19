@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head', { title: 'Admin Dashboard' }) %>
+</head>
+<body>
+  <%- include('../partials/admin-nav') %>
+
+  <div class="page">
+    <div class="page-header">
+      <h1>Students</h1>
+      <a href="/admin/students/new" class="btn btn-primary">+ Add Student</a>
+    </div>
+
+    <% if (students.length === 0) { %>
+      <p class="muted">No students yet. Add your first student to get started.</p>
+    <% } else { %>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Username</th>
+            <th>Class</th>
+            <th>Paid Months</th>
+            <th>Pending Months</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% students.forEach(({ doc, pendingCount, paidCount }) => { %>
+            <tr>
+              <td><%= doc.name %></td>
+              <td><%= doc.username %></td>
+              <td><%= doc.className || '-' %></td>
+              <td><span class="badge badge-green"><%= paidCount %></span></td>
+              <td><span class="badge <%= pendingCount > 0 ? 'badge-red' : 'badge-gray' %>"><%= pendingCount %></span></td>
+              <td><a href="/admin/students/<%= doc._id %>" class="btn btn-small btn-secondary">Manage</a></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } %>
+  </div>
+</body>
+</html>

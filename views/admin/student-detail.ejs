@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head', { title: student.name }) %>
+</head>
+<body>
+  <%- include('../partials/admin-nav') %>
+
+  <div class="page">
+    <div class="page-header">
+      <div>
+        <h1><%= student.name %></h1>
+        <p class="muted">
+          Username: <strong><%= student.username %></strong>
+          <% if (student.className) { %> &middot; <%= student.className %><% } %>
+          <% if (student.phone) { %> &middot; <%= student.phone %><% } %>
+        </p>
+      </div>
+      <a href="/admin/dashboard" class="btn btn-secondary">&larr; Back</a>
+    </div>
+
+    <div class="grid-2">
+      <!-- Add Fee Record -->
+      <div class="card">
+        <h2>Add Fee Record</h2>
+        <form method="POST" action="/admin/students/<%= student._id %>/fees">
+          <label>Month</label>
+          <select name="month" required>
+            <% months.forEach(m => { %>
+              <option value="<%= m %>"><%= m %></option>
+            <% }) %>
+          </select>
+
+          <label>Year</label>
+          <input type="number" name="year" value="<%= new Date().getFullYear() %>" required />
+
+          <label>Amount</label>
+          <input type="number" name="amount" min="0" required />
+
+          <label>Status</label>
+          <select name="status" required>
+            <option value="pending">Pending</option>
+            <option value="paid">Paid</option>
+          </select>
+
+          <button type="submit" class="btn btn-primary full-width">Add Record</button>
+        </form>
+      </div>
+
+      <!-- Reset Password -->
+      <div class="card">
+        <h2>Reset Student Password</h2>
+        <form method="POST" action="/admin/students/<%= student._id %>/reset-password">
+          <label>New Password</label>
+          <input type="text" name="newPassword" required />
+          <button type="submit" class="btn btn-secondary full-width">Reset Password</button>
+        </form>
+
+        <hr />
+
+        <h2>Delete Student</h2>
+        <form method="POST" action="/admin/students/<%= student._id %>?_method=DELETE" onsubmit="return confirm('Delete this student and all fee records? This cannot be undone.');">
+          <button type="submit" class="btn btn-danger full-width">Delete Student</button>
+        </form>
+      </div>
+    </div>
+
+    <h2 class="section-title">Fee History</h2>
+    <% if (sortedFees.length === 0) { %>
+      <p class="muted">No fee records yet.</p>
+    <% } else { %>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Month</th>
+            <th>Year</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Paid On</th>
+            <th>Remarks</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% sortedFees.forEach(fee => { %>
+            <tr>
+              <td><%= fee.month %></td>
+              <td><%= fee.year %></td>
+              <td><input type="number" name="amount" value="<%= fee.amount %>" class="inline-input" form="fee-form-<%= fee._id %>" /></td>
+              <td>
+                <select name="status" class="inline-input" form="fee-form-<%= fee._id %>">
+                  <option value="pending" <%= fee.status === 'pending' ? 'selected' : '' %>>Pending</option>
+                  <option value="paid" <%= fee.status === 'paid' ? 'selected' : '' %>>Paid</option>
+                </select>
+              </td>
+              <td><%= fee.paidOn ? new Date(fee.paidOn).toLocaleDateString() : '-' %></td>
+              <td><input type="text" name="remarks" value="<%= fee.remarks || '' %>" class="inline-input" form="fee-form-<%= fee._id %>" /></td>
+              <td class="row-actions">
+                <form id="fee-form-<%= fee._id %>" method="POST" action="/admin/students/<%= student._id %>/fees/<%= fee._id %>?_method=PUT" class="inline-form">
+                  <button type="submit" class="btn btn-small btn-primary">Save</button>
+                </form>
+                <form method="POST" action="/admin/students/<%= student._id %>/fees/<%= fee._id %>?_method=DELETE" class="inline-form" onsubmit="return confirm('Delete this fee record?');">
+                  <button type="submit" class="btn btn-small btn-danger">Delete</button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } %>
+  </div>
+</body>
+</html>

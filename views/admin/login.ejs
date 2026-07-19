@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head', { title: 'Admin Login' }) %>
+</head>
+<body>
+  <div class="center-page">
+    <div class="card">
+      <h1>Admin Login</h1>
+      <% if (error) { %>
+        <p class="error"><%= error %></p>
+      <% } %>
+      <form method="POST" action="/admin/login">
+        <label>Username</label>
+        <input type="text" name="username" required autofocus />
+
+        <label>Password</label>
+        <input type="password" name="password" required />
+
+        <button type="submit" class="btn btn-primary full-width">Login</button>
+      </form>
+      <p class="muted small"><a href="/">Back to home</a> &middot; <a href="/student/login">Student login</a></p>
+    </div>
+  </div>
+</body>
+</html>
